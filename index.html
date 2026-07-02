@@ -539,20 +539,18 @@
     })();
 
     // ============================================================
-    // お問い合わせフォーム → Slack へ通知（Incoming Webhook）
-    // ▼ 通知先チャンネルを変えるときは、Slackで新しいWebhookを発行し、
-    //   そのURLを base64 にした文字列を下の WEBHOOK_B64 に差し替えてください。
-    //   （GitHubのシークレット検出を避けるため base64 にしています）
-    //   例: ターミナルで  printf '%s' 'https://hooks.slack.com/...' | base64
+    // お問い合わせフォーム → admin@isogecall.com へメール送信
+    // FormSubmit.co 経由（静的サイト用・サーバー不要）。
+    // 送信先を変えるときは下の MAIL_TO のアドレスを書き換えてください。
+    // ※初回のみ、そのアドレス宛に届く FormSubmit の有効化メールのリンクを
+    //   1度だけクリックする必要があります（それ以降は自動でメール受信）。
     // ============================================================
     (function(){
-      var WEBHOOK_B64 = "aHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVDBBNjg1TU1MRTgvQjBCNE0yVDM5VTYvUklZOXVDNUZvYmhMc1p3NUdSZEJzb3d3";
+      var MAIL_TO = "admin@isogecall.com";
       var form = document.getElementById('contactForm');
       var successEl = document.getElementById('formSuccess');
       var errorEl = document.getElementById('formError');
       if(!form) return;
-
-      function esc(s){ return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
       form.addEventListener('submit', async function(e){
         e.preventDefault();
@@ -572,43 +570,36 @@
         errorEl.hidden = true;
 
         var data = new FormData(form);
-        var f = {
-          company: esc(data.get('company')) || '(未記入)',
-          name: esc(data.get('name')) || '(未記入)',
-          email: esc(data.get('email')) || '(未記入)',
-          phone: esc(data.get('phone')) || '(未記入)',
-          type: esc(data.get('type')) || '(未選択)',
-          message: esc(data.get('message')) || '(未記入)'
-        };
+        var company = data.get('company') || '(未記入)';
+        var name = data.get('name') || '(未記入)';
 
         var payload = {
-          text: "🆕 イソゲコールLPから新しいお問い合わせ（" + f.company + " / " + f.name + "）",
-          blocks: [
-            { type: "header", text: { type: "plain_text", text: "🆕 LPから新しいお問い合わせ", emoji: true } },
-            { type: "section", fields: [
-              { type: "mrkdwn", text: "*会社名:*\n" + f.company },
-              { type: "mrkdwn", text: "*お名前:*\n" + f.name },
-              { type: "mrkdwn", text: "*メール:*\n" + f.email },
-              { type: "mrkdwn", text: "*電話番号:*\n" + f.phone },
-              { type: "mrkdwn", text: "*お問い合わせ種別:*\n" + f.type }
-            ]},
-            { type: "section", text: { type: "mrkdwn", text: "*お問い合わせ内容:*\n" + f.message } },
-            { type: "context", elements: [
-              { type: "mrkdwn", text: "🌐 " + location.href + "  ／ 🕒 " + new Date().toLocaleString('ja-JP') }
-            ]}
-          ]
+          "会社名": company,
+          "お名前": name,
+          "メールアドレス": data.get('email') || '(未記入)',
+          "電話番号": data.get('phone') || '(未記入)',
+          "お問い合わせ種別": data.get('type') || '(未選択)',
+          "お問い合わせ内容": data.get('message') || '(未記入)',
+          "_subject": "【イソゲコールLP】新規お問い合わせ（" + company + " / " + name + "）",
+          "_template": "table",
+          "_captcha": "false",
+          "_replyto": data.get('email') || ""
         };
 
         try {
-          // Slack Incoming Webhook はブラウザからのCORSを許可しないため no-cors で送信
-          await fetch(atob(WEBHOOK_B64), {
-            method: 'POST',
-            mode: 'no-cors',
+          var res = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(MAIL_TO), {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
             body: JSON.stringify(payload)
           });
-          form.hidden = true;
-          successEl.hidden = false;
-          successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          var json = await res.json().catch(function(){ return {}; });
+          if(res.ok && (json.success === true || json.success === "true")){
+            form.hidden = true;
+            successEl.hidden = false;
+            successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            throw new Error(json.message || ("HTTP " + res.status));
+          }
         } catch (err) {
           errorEl.hidden = false;
           btn.disabled = false;
@@ -616,6 +607,7 @@
         }
       });
     })();
+
     // スクロール演出（セクションが画面に入ったらフェードイン）
     (function(){
       var els = [].slice.call(document.querySelectorAll('.section:not(.hero)'));
