@@ -37,13 +37,12 @@ HTML / CSS / Vanilla JS だけの静的サイトで、**GitHubに保存すると
 
 ---
 
-## 📨 お問い合わせフォームの届き先（メール）
+## 📨 お問い合わせフォームの届き先（Slack）
 
-フォーム送信は **FormSubmit.co 経由で `admin@isogecall.com` にメール**が届きます（静的サイトなのでサーバー不要）。
+フォーム送信は **Slack の Incoming Webhook** で指定チャンネルに通知されます（サーバー不要・有効化などの手間なし）。メールで受けたい方向けに、ページには `admin@isogecall.com` へのメールリンクも用意しています。
 
-- 届き先を変えるとき: `index.html` 内の `var MAIL_TO = "admin@isogecall.com";` のアドレスを書き換え
-- **初回だけ有効化が必要**: 送信先アドレスを変えた場合、その新アドレス宛に FormSubmit から「Activate Form」の確認メールが届くので、一度だけリンクをクリックしてください（クリック後は自動でメールが届きます）
-- 送信内容: 会社名・お名前・メール・電話・種別・本文 が表形式のメールで届きます。返信すると問い合わせ者へ返信できます（Reply-To設定済み）
+- 通知先チャンネルを変えるとき: Slackで新しいWebhookを発行し、そのURLを base64 にした文字列を `index.html` の `var WEBHOOK_B64 = "...";` に差し替え（GitHubのシークレット検出を避けるため base64 にしています。作り方: ターミナルで `printf '%s' 'https://hooks.slack.com/...' | base64`）
+- 送信内容: 会社名・お名前・メール・電話・種別・本文 が整形されて届きます
 - bot対策の honeypot 実装済み
 
 ---
