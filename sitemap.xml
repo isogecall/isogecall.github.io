@@ -2,8 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://isogecall.github.io/</loc>
-    <lastmod>2026-06-21</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://isogecall.github.io/column/</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://isogecall.github.io/column/hankyou-daiko-merit-demerit.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://isogecall.github.io/column/yakan-teikyuubi-hankyou-taisaku.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://isogecall.github.io/column/hankyou-daiko-hiyou-souba.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://isogecall.github.io/column/raitenritsu-kaizen.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://isogecall.github.io/company.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://isogecall.github.io/privacy.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>
